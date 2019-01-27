@@ -6,6 +6,7 @@ using CqrsSample.Data;
 using CqrsSample.Data.Entities;
 using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CqrsSample.Controllers
 {
@@ -21,13 +22,13 @@ namespace CqrsSample.Controllers
 
         [HttpGet]
         [Route("list")]
-        public ActionResult List()
+        public async Task<ActionResult> List()
         {
-            var list = _context.Courses.Select(c => new CourseListVm
+            var list = await _context.Courses.Select(c => new CourseListVm
             {
                 Name = c.CourseName,
                 Id = c.Id
-            });
+            }).ToListAsync();
 
             return Ok(list);
         }
