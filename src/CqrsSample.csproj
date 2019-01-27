@@ -15,7 +15,6 @@
     <Folder Include="Data\Migrations\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Helper\" />
-    <Folder Include="ViewModel\" />
   </ItemGroup>
 
 </Project>
