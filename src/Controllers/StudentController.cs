@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CqrsSample.Data;
 using CqrsSample.Data.Entities;
+using CqrsSample.Data.Repository;
 using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +17,12 @@ namespace CqrsSample.Controllers
     [Route("api/[controller]")]
     public class StudentController : ControllerBase
     {
-        private readonly StudentContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public StudentController(StudentContext context, IMapper mapper)
+        public StudentController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -29,13 +30,13 @@ namespace CqrsSample.Controllers
         [Route("list")]
         public async Task<ActionResult> List()
         {
-            var list = await _context.Students.Select(c => new StudentListVm()
+            var list = (await _unitOfWork.Students.GetAllAsync()).Select(c => new StudentListVm()
             {
                 LastName = c.LastName,
                 FirstName = c.FirstName,
                 Id = c.Id,
                 EnrolledCourseCount = 0 // TODO
-            }).ToListAsync();
+            });
 
             return Ok(list);
         }
@@ -44,8 +45,10 @@ namespace CqrsSample.Controllers
         [Route("registerstudent")]
         public async Task<ActionResult> RegisterStudent(StudentRegistrationVm student)
         {
-            await _context.AddAsync(_mapper.Map<Student>(student));
-            var registeredStudent = await _context.SaveChangesAsync();
+            var studentEntity = _mapper.Map<Student>(student);
+            _unitOfWork.Students.Add(studentEntity);
+
+            var registeredStudent = await _unitOfWork.CommitAsync();
 
             return Created("", registeredStudent); // TODO
         }
