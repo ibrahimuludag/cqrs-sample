@@ -9,7 +9,6 @@ using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ILogger = Serilog.ILogger;
 
 namespace CqrsSample.Controllers
 {
