@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CqrsSample.Data;
 using CqrsSample.Data.Entities;
 using CqrsSample.ViewModel;
@@ -15,9 +16,12 @@ namespace CqrsSample.Controllers
     public class StudentController : ControllerBase
     {
         private readonly StudentContext _context;
-        public StudentController(StudentContext context)
+        private readonly IMapper _mapper;
+
+        public StudentController(StudentContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -39,13 +43,7 @@ namespace CqrsSample.Controllers
         [Route("registerstudent")]
         public async Task<ActionResult> RegisterStudent(StudentRegistrationVm student)
         {
-            var newStudent = new Student()
-            {
-                FirstName = student.FirstName,
-                LastName = student.LastName
-            };
-
-            await _context.AddAsync(newStudent);
+            await _context.AddAsync(_mapper.Map<Student>(student));
             var registeredStudent = await _context.SaveChangesAsync();
 
             return Created("", registeredStudent); // TODO

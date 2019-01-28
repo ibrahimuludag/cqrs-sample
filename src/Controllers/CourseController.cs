@@ -7,6 +7,7 @@ using CqrsSample.Data.Entities;
 using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace CqrsSample.Controllers
 {
@@ -15,22 +16,21 @@ namespace CqrsSample.Controllers
     public class CourseController : ControllerBase
     {
         private readonly StudentContext _context;
-        public CourseController(StudentContext context)
+        private readonly IMapper _mapper;
+
+        public CourseController(StudentContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("list")]
         public async Task<ActionResult> List()
         {
-            var list = await _context.Courses.Select(c => new CourseListVm
-            {
-                Name = c.CourseName,
-                Id = c.Id
-            }).ToListAsync();
+            var list = await _context.Courses.ToListAsync();
 
-            return Ok(list);
+            return Ok(_mapper.Map<IList<CourseListVm>>(list));
         }
     }
 }

@@ -6,6 +6,7 @@ using CqrsSample.Data;
 using CqrsSample.Data.Entities;
 using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace CqrsSample.Controllers
 {
@@ -14,17 +15,20 @@ namespace CqrsSample.Controllers
     public class EnrollmentController : ControllerBase
     {
         private readonly StudentContext _context;
-        public EnrollmentController(StudentContext context)
+        private readonly IMapper _mapper;
+
+        public EnrollmentController(StudentContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost]
         [Route("enrollstudent")]
-        public async Task<ActionResult> EnrollStudent(EnrollmentStudentVm registrationInfo)
+        public async Task<ActionResult> EnrollStudent(EnrollmentStudentVm enrollmentInfo)
         {
-            var info = new Enrollment() {CourseId = registrationInfo.CourseId, StudentId = registrationInfo.StudentId};
-            await _context.AddAsync(info);
+            var enrollment = _mapper.Map<Enrollment>(enrollmentInfo);
+            await _context.AddAsync(enrollment);
             var registration = await _context.SaveChangesAsync();
             return Created("", registration); // TODO
         }
