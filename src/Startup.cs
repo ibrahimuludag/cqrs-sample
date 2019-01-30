@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -17,6 +18,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Core;
+using Swashbuckle.AspNetCore.Swagger;
+
 
 namespace CqrsSample
 {
@@ -44,6 +47,16 @@ namespace CqrsSample
                 cfg.UseSqlServer(Configuration.GetConnectionString("StudentConnectionString"));
             });
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Info
+                {
+                    Title = "Student Management System",
+                    Version = "v1",
+                    Description = "API for Student Management System"
+                });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
         }
@@ -61,6 +74,8 @@ namespace CqrsSample
                 app.UseHsts();
             }
             app.ConfigureCustomExceptionMiddleware();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "Student Management System API v1"));
 
             app.UseHttpsRedirection();
             app.UseMvc();
