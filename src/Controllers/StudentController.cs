@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CqrsSample.Data;
 using CqrsSample.Data.Entities;
 using CqrsSample.Data.Repository;
 using CqrsSample.Infrastructure.Attributes;
 using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace CqrsSample.Controllers
 {

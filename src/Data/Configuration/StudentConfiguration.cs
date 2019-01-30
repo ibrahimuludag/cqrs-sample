@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-using CqrsSample.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using CqrsSample.Data.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CqrsSample.Data.Configuration

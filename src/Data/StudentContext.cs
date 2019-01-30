@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using CqrsSample.Data.Configuration;
+﻿using System.Threading.Tasks;
 using CqrsSample.Data.Entities;
 using CqrsSample.Data.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +8,7 @@ namespace CqrsSample.Data
 {
     public class StudentContext : DbContext , IGenericDbContext
     {
-        public StudentContext(DbContextOptions<StudentContext> options) : base(options)
+        public StudentContext(DbContextOptions options) : base(options)
         {
         }
 
