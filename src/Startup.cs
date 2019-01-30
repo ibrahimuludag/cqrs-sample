@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CqrsSample.Data;
 using CqrsSample.Infrastructure.Extensions;
-using CqrsSample.Infrastructure.Profiles;
+using CqrsSample.Infrastructure.Automapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -19,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Core;
 using Swashbuckle.AspNetCore.Swagger;
+using CqrsSample.Data.Repository;
 
 
 namespace CqrsSample
@@ -57,8 +60,14 @@ namespace CqrsSample
                 });
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IValidatorFactory, ServiceProviderValidatorFactory>();
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

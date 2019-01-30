@@ -26,12 +26,12 @@ namespace CqrsSample.Controllers
 
         [HttpPost]
         [Route("enrollstudent")]
-        public async Task<ActionResult> EnrollStudent(EnrollmentStudentVm enrollmentInfo)
+        public async Task<ActionResult> EnrollStudent(EnrollStudentVm enrollmentInfo)
         {
             var enrollment = _mapper.Map<Enrollment>(enrollmentInfo);
             _unitOfWork.Enrollments.Add(enrollment);
             await _unitOfWork.CommitAsync();
-            return Created("", enrollment); // TODO
+            return Created("", _mapper.Map<EnrollmentDetailVm>(enrollment)); // TODO
         }
     }
 }

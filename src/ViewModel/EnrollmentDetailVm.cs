@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CqrsSample.ViewModel
 {
-    public class EnrollmentStudentVm
+    public class EnrollmentDetailVm
     {
         public int StudentId { get; set; }
         public int CourseId { get; set; }

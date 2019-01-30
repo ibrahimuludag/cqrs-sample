@@ -13,6 +13,7 @@ namespace CqrsSample.Data.Configuration
     {
         public override void Configure(EntityTypeBuilder<Student> builder)
         {
+            base.Configure(builder);
 
             builder.Property(c => c.FirstName)
                 .IsRequired()

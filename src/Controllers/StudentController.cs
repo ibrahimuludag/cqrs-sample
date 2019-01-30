@@ -6,6 +6,7 @@ using AutoMapper;
 using CqrsSample.Data;
 using CqrsSample.Data.Entities;
 using CqrsSample.Data.Repository;
+using CqrsSample.Infrastructure.Attributes;
 using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace CqrsSample.Controllers
 {
     [ApiController]
+    [ValidateModel]
     [Route("api/[controller]")]
     public class StudentController : ControllerBase
     {
@@ -30,7 +32,7 @@ namespace CqrsSample.Controllers
         [Route("list")]
         public async Task<ActionResult> List()
         {
-            var list = (await _unitOfWork.Students.GetAllAsync()).Select(c => new StudentListVm()
+            var list = (await _unitOfWork.Students.GetAllAsync()).Select(c => new StudentDetailListVm()
             {
                 LastName = c.LastName,
                 FirstName = c.FirstName,
@@ -48,9 +50,9 @@ namespace CqrsSample.Controllers
             var studentEntity = _mapper.Map<Student>(student);
             _unitOfWork.Students.Add(studentEntity);
 
-            var registeredStudent = await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
 
-            return Created("", registeredStudent); // TODO
+            return Created("", _mapper.Map<StudentDetailVm>(studentEntity)); // TODO
         }
     }
 }

@@ -13,6 +13,8 @@ namespace CqrsSample.Data.Configuration
     {
         public override void Configure(EntityTypeBuilder<Enrollment> builder)
         {
+            base.Configure(builder);
+
             builder.HasIndex(c => new { c.CourseId, c.StudentId })
                 .IsUnique();
 

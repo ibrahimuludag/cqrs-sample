@@ -31,7 +31,7 @@ namespace CqrsSample.Controllers
         {
             var list = await _unitOfWork.Courses.GetAllAsync();
 
-            return Ok(_mapper.Map<IList<CourseListVm>>(list));
+            return Ok(_mapper.Map<IList<CourseDetailListVm>>(list));
         }
     }
 }
