@@ -2,7 +2,7 @@
 
 namespace CqrsSample.ViewModel
 {
-    public class StudentRegistrationVm
+    public class StudentRegistrationDto
     {
         [Required]
         [MaxLength(100)]

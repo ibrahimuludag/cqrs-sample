@@ -9,11 +9,11 @@ namespace CqrsSample.Infrastructure.Automapper
         public MappingProfile()
         {
             // Add as many of these lines as you need to map your objects
-            CreateMap<StudentRegistrationVm, Student>().ReverseMap();
-            CreateMap<StudentDetailVm, Student>().ReverseMap();
-            CreateMap<Course, CourseDetailListVm>().ReverseMap();
-            CreateMap<EnrollStudentVm, Enrollment>().ReverseMap();
-            CreateMap<EnrollmentDetailVm, Enrollment>().ReverseMap();
+            CreateMap<StudentRegistrationDto, Student>().ReverseMap();
+            CreateMap<StudentDetailDto, Student>().ReverseMap();
+            CreateMap<Course, CourseDetailListDto>().ReverseMap();
+            CreateMap<EnrollStudentDto, Enrollment>().ReverseMap();
+            CreateMap<EnrollmentDetaiDto, Enrollment>().ReverseMap();
         }
     }
 }

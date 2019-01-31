@@ -1,6 +1,6 @@
 ﻿namespace CqrsSample.ViewModel
 {
-    public class StudentDetailVm
+    public class StudentDetailDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

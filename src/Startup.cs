@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using CqrsSample.Data.Repository;
+using CqrsSample.Infrastructure.Utils;
+using MediatR;
 
 
 namespace CqrsSample
@@ -28,18 +30,26 @@ namespace CqrsSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var commandsConnectionString = new CommandsConnectionString(Configuration.GetConnectionString("CommandConnectionString"));
+            var queriesConnectionString = new QueriesConnectionString(Configuration.GetConnectionString("QueriesConnectionString"));
+
+            services.AddSingleton(commandsConnectionString);
+            services.AddSingleton(queriesConnectionString);
+
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
             });
-
             services.AddSingleton(mappingConfig.CreateMapper());
+
+            
             
             services.AddDbContext<StudentContext>(cfg =>
             {
-                cfg.UseSqlServer(Configuration.GetConnectionString("StudentConnectionString"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("CommandConnectionString"));
             });
 
+            services.AddApiVersioning();
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info
@@ -56,8 +66,9 @@ namespace CqrsSample
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
-
             
+            services.AddMediatR(typeof(Startup).Assembly);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

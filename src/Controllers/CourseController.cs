@@ -4,29 +4,34 @@ using CqrsSample.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using CqrsSample.Data.Repository;
+using CqrsSample.Infrastructure.Attributes;
+using CqrsSample.Infrastructure.Utils;
+using CqrsSample.Logic.Queries;
+using MediatR;
 
 namespace CqrsSample.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class CourseController : ControllerBase
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+    [ApiVersion("1.0")]
+    [ValidateModel]
+    [Route("api/v{version:apiVersion}/[controller]")]
 
-        public CourseController(IUnitOfWork unitOfWork, IMapper mapper)
+    public class CourseController : RootContollerBase
+    {
+        private readonly IMediator _mediator;
+
+        public CourseController(IMediator mediator)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [Route("list")]
-        public async Task<ActionResult> List()
+        public async Task<IActionResult> List()
         {
-            var list = await _unitOfWork.Courses.GetAllAsync();
+            var list = await _mediator.Send(new GetCourseListQuery()).ConfigureAwait(false);
 
-            return Ok(_mapper.Map<IList<CourseDetailListVm>>(list));
+            return Ok(list);
         }
     }
 }

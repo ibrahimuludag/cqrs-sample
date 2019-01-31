@@ -4,50 +4,45 @@ using AutoMapper;
 using CqrsSample.Data.Entities;
 using CqrsSample.Data.Repository;
 using CqrsSample.Infrastructure.Attributes;
+using CqrsSample.Logic.Commands;
+using CqrsSample.Logic.Queries;
 using CqrsSample.ViewModel;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CqrsSample.Controllers
 {
     [ApiController]
     [ValidateModel]
-    [Route("api/[controller]")]
-    public class StudentController : ControllerBase
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    public class StudentController : RootContollerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public StudentController(IUnitOfWork unitOfWork, IMapper mapper)
+        public StudentController(IMediator mediator, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _mediator = mediator;
             _mapper = mapper;
         }
 
         [HttpGet]
         [Route("list")]
-        public async Task<ActionResult> List()
+        public async Task<IActionResult> List()
         {
-            var list = (await _unitOfWork.Students.GetAllAsync()).Select(c => new StudentDetailListVm()
-            {
-                LastName = c.LastName,
-                FirstName = c.FirstName,
-                Id = c.Id,
-                EnrolledCourseCount = 0 // TODO
-            });
+            var list = await _mediator.Send(new GetStudentListQuery()).ConfigureAwait(false);
 
             return Ok(list);
         }
 
         [HttpPost]
         [Route("registerstudent")]
-        public async Task<ActionResult> RegisterStudent(StudentRegistrationVm student)
+        public async Task<IActionResult> RegisterStudent(StudentRegistrationDto student)
         {
-            var studentEntity = _mapper.Map<Student>(student);
-            _unitOfWork.Students.Add(studentEntity);
+            var newStudent = await _mediator.Send(new RegisterStudentCommand(student)).ConfigureAwait(false);
 
-            await _unitOfWork.CommitAsync();
-
-            return Created("", _mapper.Map<StudentDetailVm>(studentEntity)); // TODO
+            return Created("", _mapper.Map<StudentDetailDto>(newStudent)); // TODO : Specify url
         }
     }
 }
